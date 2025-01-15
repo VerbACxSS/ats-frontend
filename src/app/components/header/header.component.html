@@ -1,0 +1,24 @@
+<it-header slimTitle="PRIN 2020" [light]="false" [showSearch]="false" [sticky]="false">
+  <ng-container brand>
+    <a routerLink="/home">
+      <img class="logo p-2 p-md-1 me-2" ngSrc="./assets/logo.svg" title="verbacxss-logo" alt="verbacxss-logo" height="100" width="100" priority/>
+      <div class="it-brand-text">
+        <div class="it-brand-title">SEMPL-IT</div>
+      </div>
+    </a>
+  </ng-container>
+  <div rightZone>
+    <a href="https://prin.mur.gov.it" title="mur" target="_blank" rel="external">
+      <img class="logo p-2 p-md-1 me-2" ngSrc="./assets/logo-mur.svg" title="mur-logo" alt="mur-logo" height="100" width="100" priority/>
+    </a>
+  </div>
+  <ng-container navItems>
+    @for (item of MENU_ITEMS; track $index) {
+      <it-navbar-item>
+        <a [class]="this.router.url.includes(item.path)? 'nav-link active' : 'nav-link'" [routerLink]="item.path">
+          <span>{{item.name}}</span>
+        </a>
+      </it-navbar-item>
+    }
+  </ng-container>
+</it-header>

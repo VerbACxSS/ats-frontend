@@ -1,0 +1,140 @@
+// Import bootstrap-italia styles
+@import "bootstrap-italia/src/scss/bootstrap-italia";
+
+// All pages have the max screen height the footer is always at bottom
+body {
+  min-height: 100vh;
+}
+
+
+// Text classes
+.text-justify {
+  text-align: justify;
+}
+
+
+// Override default bootstrap notification styles
+.notification {
+  width: auto;
+  left: 50%;
+  transform: translateX(-50%);
+
+  .h5 {
+    text-transform: none;
+  }
+}
+@media (max-width: 600px) {
+  .notification {
+    width: 100%;
+    max-width: 80%;
+    left: 50%;
+    transform: translateX(-50%);
+
+    .h5 {
+      text-transform: none;
+    }
+  }
+}
+
+
+// Override default bootstrap callout styles
+.callout {
+  max-width: 100% !important;
+  width: 100% !important;
+
+  .callout-inner {
+    border: 2px solid !important;
+    .callout-title {
+      background-color: #f4f4f4 !important;
+      .text::after {
+        display: none;
+      }
+    }
+    .callout-title::before {
+      display: none;
+    }
+  }
+}
+
+
+// Override default bootstrap form styles
+textarea {
+  border-radius: 4px;
+  border-bottom: 1px solid #000 !important;
+  background: white !important;
+}
+textarea.is-invalid {
+  border-radius: 4px;
+  border-bottom: 1px solid #d9364f !important;
+  background: white !important;
+}
+
+
+// Override default bootstrap chip styles
+.chip {
+  min-width: 0;
+}
+
+
+// Override default bootstrap header styles
+it-header {
+  // Override header logo
+  .bs-it-sticky-wrapper {
+    .logo {
+      max-width: 57px;
+      max-height: 57px;
+    }
+  }
+
+  .logo {
+    max-width: 64px;
+    max-height: 64px;
+  }
+
+  @media (min-width: 992px) {
+    .logo {
+      max-width: 100px;
+      max-height: 100px;
+    }
+  }
+
+  // Override header width
+  .it-nav-wrapper .it-header-center-wrapper .container-fluid {
+    width: 100%;
+  }
+
+  @media (min-width: 576px) {
+    .it-nav-wrapper .it-header-center-wrapper .container-fluid {
+      max-width: 540px;
+    }
+  }
+  @media (min-width: 768px) {
+    .it-nav-wrapper .it-header-center-wrapper .container-fluid {
+      max-width: 720px;
+    }
+  }
+  @media (min-width: 992px) {
+    .it-nav-wrapper .it-header-center-wrapper .container-fluid {
+      max-width: 960px;
+    }
+  }
+  @media screen and (min-width: 1200px) {
+    .it-nav-wrapper .it-header-center-wrapper .container-fluid {
+      max-width: 1176px;
+    }
+  }
+  @media screen and (min-width: 1400px) {
+    .it-nav-wrapper .it-header-center-wrapper .container-fluid {
+      max-width: 1320px;
+    }
+  }
+
+  // Override header links
+  a {
+    cursor: pointer !important;
+    text-decoration: none !important;
+  }
+  .navbar .navbar-collapsable .navbar-nav li.nav-item a.nav-link.active {
+    border-color: rgba(255, 255, 255, 1) !important;
+  }
+}

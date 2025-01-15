@@ -1,0 +1,26 @@
+form {
+  padding-top: 2em;
+  min-width: 80%;
+
+  .form-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    gap: 30px;
+  }
+}
+.central-col {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.w-10 {
+  width: 10%;
+}
+
+.w-40 {
+  width: 40%;
+}

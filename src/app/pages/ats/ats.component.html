@@ -1,0 +1,159 @@
+<section class="section section-muted" aria-describedby="text-simplifier-title">
+  <div class="section-content">
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <h2 class="h3 text-center mb-4" id="text-simplifier-title">Semplifica il tuo testo</h2>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div class="row">
+        <div class="col">
+          <form class="form-group" [formGroup]="simplificationFormGroup" (ngSubmit)="simplify()">
+            <it-textarea label="Testo da semplificare"
+                         description="Separa ogni paragrafo con due accapo"
+                         [rows]="1"
+                         (keyup)="autogrow($event)"
+                         formControlName="text"></it-textarea>
+
+            <it-select label="Modello"
+                       description="Scegli il modello da utilizzare per la semplificazione"
+                       [options]="ATS_DEFAULT"
+                       [groups]="MODELS_ATS"
+                       formControlName="model"></it-select>
+
+            <div class="form-buttons">
+              <button type="submit" itButton="primary">Semplifica</button>
+              <button type="reset" itButton="warning">Reset</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      @if (results.length > 0) {
+        <!-- Table result -->
+        <div class="row">
+          <div class="col">
+            <it-table>
+              <ng-container thead>
+                <tr>
+                  <th scope="col" class="w-40">Originale</th>
+                  <th scope="col" class="w-10"></th>
+                  <th scope="col" class="w-40">Semplificato</th>
+                </tr>
+              </ng-container>
+
+              <ng-container tbody>
+                @for(r of results; track $index) {
+                  <tr>
+                    <td class="w-40">
+                      <div>{{r.cleanedParagraph.text}}</div>
+                      <div class="d-flex flex-row justify-content-center">
+                        <it-icon name="info-circle" size="sm" (click)="itCollapse1.toggle()" itTooltip="Visualizza indici di leggibilità"></it-icon>
+                      </div>
+                      <it-collapse #itCollapse1="itCollapse">
+                        <div class="pt-3">
+                          <div>
+                            <strong>Tokens</strong>: {{r.cleanedParagraph.readabilityMetrics.tokens}}
+                          </div>
+                          <div [ngStyle]="{'color': getVdbColor(r.cleanedParagraph.readabilityMetrics.vdb)}">
+                            <strong>VdB</strong>: {{(r.cleanedParagraph.readabilityMetrics.vdb).toFixed(2)}} %
+                          </div>
+                          <div [ngStyle]="{'color': getGulpeaseColor(r.cleanedParagraph.readabilityMetrics.gulpease)}">
+                            <strong>Gulpease Index</strong>: {{r.cleanedParagraph.readabilityMetrics.gulpease.toFixed(2)}}
+                          </div>
+                          <div [ngStyle]="{'color': getFleschVaccaColor(r.cleanedParagraph.readabilityMetrics.fleschVacca)}">
+                            <strong>Flesch Vacca</strong>: {{r.cleanedParagraph.readabilityMetrics.fleschVacca.toFixed(2)}}
+                          </div>
+                        </div>
+                      </it-collapse>
+                    </td>
+                    <td class="w-10" style="vertical-align: middle;">
+                      <div class="central-col">
+                        <it-chip [label]="(r.simplifiedParagraphs[r.selectedSimplifiedParagraphIndex].similarityScore).toFixed(2) + '%'"  itTooltip="Semantic Textual Similarity"></it-chip>
+                      </div>
+                    </td>
+                    <td class="w-40">
+                      <div class="mb-4">{{r.simplifiedParagraphs[r.selectedSimplifiedParagraphIndex].text}}</div>
+                      <div class="d-flex flex-row justify-content-between">
+                        <it-icon name="chevron-left" size="sm" (click)="prev(r)" itTooltip="Soluzione precedente"></it-icon>
+                        <it-icon name="info-circle" size="sm" (click)="itCollapse2.toggle()" itTooltip="Visualizza indici di leggibilità"></it-icon>
+                        <it-icon name="chevron-right" size="sm" (click)="next(r)" itTooltip="Soluzione successiva"></it-icon>
+                      </div>
+                      <div class="d-flex flex-row justify-content-center">
+                        Soluzione n.{{r.selectedSimplifiedParagraphIndex + 1}}
+                      </div>
+                      <it-collapse #itCollapse2="itCollapse">
+                        <div class="pt-3">
+                          <div>
+                            <strong>Tokens</strong>: {{r.simplifiedParagraphs[r.selectedSimplifiedParagraphIndex].readabilityMetrics.tokens}}
+                          </div>
+                          <div [ngStyle]="{'color': getVdbColor(r.simplifiedParagraphs[r.selectedSimplifiedParagraphIndex].readabilityMetrics.vdb)}">
+                            <strong>VdB</strong>: {{(r.simplifiedParagraphs[r.selectedSimplifiedParagraphIndex].readabilityMetrics.vdb).toFixed(2)}} %
+                          </div>
+                          <div [ngStyle]="{'color': getGulpeaseColor(r.simplifiedParagraphs[r.selectedSimplifiedParagraphIndex].readabilityMetrics.gulpease)}">
+                            <strong>Gulpease Index</strong>: {{r.simplifiedParagraphs[r.selectedSimplifiedParagraphIndex].readabilityMetrics.gulpease.toFixed(2)}}
+                          </div>
+                          <div [ngStyle]="{'color': getFleschVaccaColor(r.simplifiedParagraphs[r.selectedSimplifiedParagraphIndex].readabilityMetrics.fleschVacca)}">
+                            <strong>Flesch Vacca</strong>: {{r.simplifiedParagraphs[r.selectedSimplifiedParagraphIndex].readabilityMetrics.fleschVacca.toFixed(2)}}
+                          </div>
+                        </div>
+                      </it-collapse>
+                    </td>
+                  </tr>
+                }
+              </ng-container>
+            </it-table>
+          </div>
+        </div>
+
+        <!-- Result text-similarity summary -->
+        <div class="row justify-content-center">
+          <div class="col-12 col-md-6 col-xl-4">
+            <it-callout label="Semantic Textual Similarity">
+              <h3 class="h1 text-center" [ngStyle]="{'color': getSematicSimilarityColor(getAverageSimilarityScore())}">
+                {{(getAverageSimilarityScore()).toFixed(2)}} %
+              </h3>
+            </it-callout>
+          </div>
+        </div>
+
+        <!-- Result simplification-metrics summary -->
+        <div class="row justify-content-center">
+          <div class="col-12 col-sm-6">
+            <it-callout class="w-100" label="Original Readability Metrics">
+              <h6 class="text-center">Tokens</h6>
+              <div class="text-center">{{getAverageOriginalReadabilityMetrics().tokens}}</div>
+
+              <h6 class="text-center" [ngStyle]="{'color': getVdbColor(getAverageOriginalReadabilityMetrics().vdb)}">VdB</h6>
+              <div class="text-center" [ngStyle]="{'color': getVdbColor(getAverageOriginalReadabilityMetrics().vdb)}">{{(getAverageOriginalReadabilityMetrics().vdb).toFixed(2)}} %</div>
+
+              <h6 class="text-center" [ngStyle]="{'color': getGulpeaseColor(getAverageOriginalReadabilityMetrics().gulpease)}">Gulpease Index</h6>
+              <div class="text-center" [ngStyle]="{'color': getGulpeaseColor(getAverageOriginalReadabilityMetrics().gulpease)}">{{getAverageOriginalReadabilityMetrics().gulpease.toFixed(2)}}</div>
+
+              <h6 class="text-center" [ngStyle]="{'color': getFleschReadingEaseColor(getAverageOriginalReadabilityMetrics().fleschVacca)}">Flesch Vacca</h6>
+              <div class="text-center" [ngStyle]="{'color': getFleschReadingEaseColor(getAverageOriginalReadabilityMetrics().fleschVacca)}">{{getAverageOriginalReadabilityMetrics().fleschVacca.toFixed(2)}}</div>
+            </it-callout>
+          </div>
+          <div class="col-12 col-sm-6">
+            <it-callout class="w-100" label="Simplified Readability Metrics">
+              <h6 class="text-center">Tokens</h6>
+              <div class="text-center">{{getAverageSimplifiedReadabilityMetrics().tokens}}</div>
+
+              <h6 class="text-center" [ngStyle]="{'color': getVdbColor(getAverageSimplifiedReadabilityMetrics().vdb)}">VdB</h6>
+              <div class="text-center" [ngStyle]="{'color': getVdbColor(getAverageSimplifiedReadabilityMetrics().vdb)}">{{(getAverageSimplifiedReadabilityMetrics().vdb).toFixed(2)}} %</div>
+
+              <h6 class="text-center" [ngStyle]="{'color': getGulpeaseColor(getAverageSimplifiedReadabilityMetrics().gulpease)}">Gulpease Index</h6>
+              <div class="text-center" [ngStyle]="{'color': getGulpeaseColor(getAverageSimplifiedReadabilityMetrics().gulpease)}">{{getAverageSimplifiedReadabilityMetrics().gulpease.toFixed(2)}}</div>
+
+              <h6 class="text-center" [ngStyle]="{'color': getFleschReadingEaseColor(getAverageSimplifiedReadabilityMetrics().fleschVacca)}">Flesch Vacca</h6>
+              <div class="text-center" [ngStyle]="{'color': getFleschReadingEaseColor(getAverageSimplifiedReadabilityMetrics().fleschVacca)}">{{getAverageSimplifiedReadabilityMetrics().fleschVacca.toFixed(2)}}</div>
+            </it-callout>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+

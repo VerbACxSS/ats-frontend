@@ -1,0 +1,13 @@
+services:
+  sempl-it-frontend:
+    container_name: "sempl-it-frontend"
+    image: "sempl-it-frontend"
+    build:
+      context: "."
+      args:
+        BUILD_VERSION: ${BUILD_VERSION:-local}
+    restart: "unless-stopped"
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: [ "CMD", "nginx", "-t" ]

@@ -1,0 +1,20 @@
+<!-- Header -->
+<app-header></app-header>
+
+<!-- Main content -->
+<main>
+  <router-outlet></router-outlet>
+</main>
+
+<!-- Back to top button -->
+<it-back-to-top small="true" shadow="true" dark="false"></it-back-to-top>
+
+<!-- Notifications -->
+<it-notifications></it-notifications>
+
+<!-- Spinner -->
+@if (isSpinnerActive) {
+  <div class="spinner-backdrop">
+    <it-spinner [active]="isSpinnerActive"></it-spinner>
+  </div>
+}
