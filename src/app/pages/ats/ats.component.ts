@@ -58,8 +58,8 @@ export class AtsComponent {
           value: 'sempl-it-mt5-small'
         },
         {
-          text: 'mt5-small',
-          value: 'sempl-it-mt5-small'
+          text: 'umt5-small',
+          value: 'sempl-it-umt5-small'
         },
         {
           text: 'gpt2-small-italian',
